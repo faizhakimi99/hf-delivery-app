@@ -31,16 +31,7 @@ const orderSchema = Schema({
     isDelivered: {
         type: Boolean,
         default: false,
-    },
-    isConfirmed: {
-        type: Boolean,
-        default: false,
-    },
-    isCancelled: {
-        type: Boolean,
-        default: false,
     }
-
 });
 
 module.exports = mongoose.model("Order", orderSchema);
