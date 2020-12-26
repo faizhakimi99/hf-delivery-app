@@ -4,8 +4,6 @@ const Store = require("../models/store");
 const Cart = require("../models/cart");
 const Order = require("../models/order");
 const middlewareObj = require('../middleware');
-const { collection } = require("../models/store");
-const order = require("../models/order");
 
 
 ///////////////////CHECKOUT FROM CART////////////////////////////
@@ -23,6 +21,7 @@ router.get("/checkout", async (req, res) => {
     totalPrice: cart.totalPrice.toFixed(2),
     totalItems: cart.totalItems,
   });
+
 })
 
 router.post("/checkout", async (req, res) => {
@@ -33,7 +32,7 @@ router.post("/checkout", async (req, res) => {
     console.log("REQ SESSION CURRENT USER IN CHECKOUT:" + req.session.currentUser);
     var cart = new Cart(req.session.cart);
 
-    //Store which sells the items in the cart
+    //Store which the sells the items in the cart
     var store = await Store.findById(req.session.cartStoreId);
   
     var order = new Order({
@@ -59,36 +58,18 @@ router.post("/checkout", async (req, res) => {
 })
 
 router.get("/orders/:id", (req, res) => {
-    //Get orders from an customer sorted by latest datetime
-    Order.find({customer: req.params.id}).populate("store").sort({createdAt: -1}).exec((err, customerOrders) => {
+    Order.find({customer: req.params.id}).populate("store").exec((err, customerOrders) => {
         if(err){
             console.log(err);
         }
         else{
-            res.render("order", {customerOrders: customerOrders});
+            res.render("order.ejs", {customerOrders: customerOrders});
         }
     })
 
 
 })
   
-
-router.get('/viewCustomerOrder', (req, res)=>
-{
-  Order.find({}, (err, takeOrder) =>
-   {
-            if(err){
-                console.log(err);
-                //res.redirect("/");
-            }
-            else{
-                res.render("viewCustomerOrder", {orders: takeOrder});
-            }
-   })
-})
-
-
-
   
   
 module.exports = router;
